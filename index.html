@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8" />
+    <title>Calculadora de Multa Rescisória</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css" />
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <style>
+        /* Estilos padrão (modo claro) */
+        :root {
+            --bg-color: #ffffff;
+            --text-color: #212529;
+            --card-bg: #ffffff;
+            --input-bg: #ffffff;
+            --border-color: #ced4da;
+            --header-bg: #212529;
+            --header-text: #ffffff;
+            --btn-verde-bg: #28a745;
+            --btn-verde-text: white;
+            --alert-info-bg: #cff4fc;
+            --alert-info-text: #055160;
+            --card-success-bg: #d1e7dd;
+            --card-success-header: #198754;
+            --card-success-text: #0f5132;
+        }
+
+        /* Modo escuro */
+        [data-theme="dark"] {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --input-bg: #2d2d2d;
+            --border-color: #444;
+            --header-bg: #000000;
+            --header-text: #ffffff;
+            --btn-verde-bg: #1a7431;
+            --btn-verde-text: white;
+            --alert-info-bg: #0d3c47;
+            --alert-info-text: #9ad8e6;
+            --card-success-bg: #0f3a29;
+            --card-success-header: #0d6e41;
+            --card-success-text: #a3cfbb;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            transition: all 0.3s ease;
+        }
+
+        header {
+            background-color: var(--header-bg) !important;
+            color: var(--header-text) !important;
+        }
+
+        .form-control, .input-group-text {
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            border-color: var(--border-color);
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .alert-info {
+            background-color: var(--alert-info-bg);
+            color: var(--alert-info-text);
+        }
+
+        .card-header.bg-success {
+            background-color: var(--card-success-header) !important;
+        }
+
+        .card-body {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+        }
+
+        .btn-verde {
+            background-color: var(--btn-verde-bg);
+            color: var(--btn-verde-text);
+        }
+
+        .info-uso {
+            font-size: 0.85rem;
+        }
+
+        /* Estilos para o datepicker no modo escuro */
+        [data-theme="dark"] .ui-widget-content {
+            background: #2d2d2d;
+            color: #e0e0e0;
+        }
+
+        [data-theme="dark"] .ui-widget-header {
+            background: #1a1a1a;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+
+        [data-theme="dark"] .ui-state-default {
+            background: #3d3d3d;
+            color: #e0e0e0;
+            border-color: #555;
+        }
+
+        [data-theme="dark"] .ui-state-highlight {
+            background: #0d6efd;
+            color: white;
+        }
+
+        [data-theme="dark"] .ui-state-active {
+            background: #0a58ca;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+
+<header class="p-3 bg-dark text-white">
+    <div class="container">
+        <div class="d-flex align-items-center justify-content-between">
+            <div class="d-flex align-items-center">
+                <img src="https://content.loft.com.br/copan/loft/images/logo/primary/large.svg" width="40" height="40" class="me-2" />
+                <h5 class="mb-0">Calculadora de Multa Rescisória</h5>
+            </div>
+            <div>
+                <button id="toggleTheme" class="btn btn-outline-light btn-sm">
+                    <span id="themeIcon">🌙</span> Modo Escuro
+                </button>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6 mx-auto">
+
+            <form id="formMulta" class="text-center">
+                <div class="mb-3">
+                    <label class="form-label">Valor do Aluguel mensal</label>
+                    <div class="input-group">
+                        <span class="input-group-text">R$</span>
+                        <input type="text" id="valorAluguel" class="form-control" required />
+                    </div>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Data de início do contrato</label>
+                    <input type="text" id="dataInicio" class="form-control datepicker" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Data de fim do contrato</label>
+                    <input type="text" id="dataFim" class="form-control datepicker" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Data de rescisão do contrato</label>
+                    <input type="text" id="dataRescisao" class="form-control datepicker" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Multa Pactuada</label>
+                    <input type="text" id="multaPactuada" class="form-control" required />
+                </div>
+                <div class="text-center">
+                    <button type="button" class="btn btn-primary" onclick="calcularMulta()">Calcular</button>
+                    <button type="button" class="btn btn-verde ms-2" onclick="limparCampos()">Limpar</button>
+                </div>
+            </form>
+
+            <!-- INSTRUÇÕES DE USO ABAIXO DO FORMULÁRIO -->
+            <div class="alert alert-info mt-4 info-uso">
+                <h6 class="text-center">Como usar a Calculadora de Multa Rescisória</h6>
+                <p>Informe o valor do aluguel, as datas de início, fim e rescisão do contrato (dd/mm/aaaa) e a multa pactuada.</p>
+                <p>A multa pactuada pode ser um número (ex: <code>3</code>) indicando a quantidade de aluguéis proporcional ao tempo restante, ou um percentual (ex: <code>10%</code>) aplicado sobre os meses restantes.</p>
+                <p>Os cálculos seguem a <strong>Lei do Inquilinato (Lei 8.245/91)</strong> e jurisprudência vigente.</p>
+            </div>
+
+        </div>
+
+        <div class="col-md-6 mx-auto" id="resultado" style="display: none;">
+            <div class="card border-success mb-3">
+                <div class="card-header bg-success text-white text-center">Resultado</div>
+                <div class="card-body">
+                    <p class="text-center"><strong>Duração total do contrato:</strong> <span id="totalMesesContrato"></span> meses</p>
+                    <p class="text-center"><strong>Meses cumpridos:</strong> <span id="mesesCumpridos"></span></p>
+                    <p class="text-center"><strong>Meses restantes:</strong> <span id="mesesRestantes"></span></p>
+                    <p class="text-center"><strong>Valor da multa:</strong> <span id="valorMulta"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Configuração do datepicker
+    $.datepicker.setDefaults({
+        dateFormat: "dd/mm/yy",
+        dayNames: ["Domingo", "Segunda", "Terça", "Quarta", "Quinta", "Sexta", "Sábado"],
+        dayNamesMin: ["D", "S", "T", "Q", "Q", "S", "S"],
+        monthNames: [
+            "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+            "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
+        ],
+        monthNamesShort: ["Jan", "Fev", "Mar", "Abr", "Mai", "Jun",
+            "Jul", "Ago", "Set", "Out", "Nov", "Dez"
+        ],
+        nextText: "Próximo",
+        prevText: "Anterior"
+    });
+
+    $(function () {
+        // Inicializar datepicker
+        $(".datepicker").datepicker();
+        
+        // Verificar preferência de tema salva
+        const savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            updateThemeButton(true);
+        }
+        
+        // Configurar o botão de alternar tema
+        $('#toggleTheme').click(function() {
+            const isDarkMode = document.documentElement.getAttribute('data-theme') === 'dark';
+            if (isDarkMode) {
+                document.documentElement.removeAttribute('data-theme');
+                localStorage.setItem('theme', 'light');
+                updateThemeButton(false);
+            } else {
+                document.documentElement.setAttribute('data-theme', 'dark');
+                localStorage.setItem('theme', 'dark');
+                updateThemeButton(true);
+            }
+        });
+    });
+
+    // Atualiza o texto e ícone do botão de tema
+    function updateThemeButton(isDark) {
+        if (isDark) {
+            $('#themeIcon').text('☀️');
+            $('#toggleTheme').text('').append('<span id="themeIcon">☀️</span> Modo Claro');
+        } else {
+            $('#themeIcon').text('🌙');
+            $('#toggleTheme').text('').append('<span id="themeIcon">🌙</span> Modo Escuro');
+        }
+    }
+
+    function parseDate(dateStr) {
+        const [d, m, y] = dateStr.split('/');
+        return new Date(`${y}-${m}-${d}`);
+    }
+
+    function calcularDiferencaMesesEDias(dataInicio, dataFim) {
+        let anos = dataFim.getFullYear() - dataInicio.getFullYear();
+        let meses = dataFim.getMonth() - dataInicio.getMonth();
+        let dias = dataFim.getDate() - dataInicio.getDate();
+
+        if (dias < 0) {
+            meses--;
+            const ultimoDiaMesAnterior = new Date(dataFim.getFullYear(), dataFim.getMonth(), 0).getDate();
+            dias += ultimoDiaMesAnterior;
+        }
+
+        const totalMeses = anos * 12 + meses;
+
+        return { meses: totalMeses, dias: dias };
+    }
+
+    function calcularMulta() {
+        const aluguel = parseFloat($('#valorAluguel').val().replace('.', '').replace(',', '.'));
+        const inicio = parseDate($('#dataInicio').val());
+        const fim = parseDate($('#dataFim').val());
+        const rescisao = parseDate($('#dataRescisao').val());
+        const multaInput = $('#multaPactuada').val().trim();
+
+        if (!aluguel || isNaN(inicio) || isNaN(fim) || isNaN(rescisao) || !multaInput) {
+            alert('Preencha todos os campos corretamente.');
+            return;
+        }
+
+        if (rescisao >= fim) {
+            alert('A data de rescisão deve ser anterior ao término do contrato.');
+            return;
+        }
+
+        const duracaoContrato = calcularDiferencaMesesEDias(inicio, fim);
+        let mesesTotais = duracaoContrato.meses;
+        let diasTotais = duracaoContrato.dias;
+
+        if (diasTotais >= 15) mesesTotais++;
+
+        const restanteContrato = calcularDiferencaMesesEDias(rescisao, fim);
+        let mesesRestantes = restanteContrato.meses;
+        let diasRestantes = restanteContrato.dias;
+
+        if (diasRestantes >= 15) mesesRestantes++;
+
+        let multa = 0;
+
+        if (multaInput.includes('%')) {
+            const percentual = parseFloat(multaInput.replace('%', ''));
+            multa = aluguel * mesesRestantes * (percentual / 100);
+        } else {
+            const mesesMulta = parseFloat(multaInput);
+            const proporcional = mesesRestantes / mesesTotais;
+            multa = aluguel * mesesMulta * proporcional;
+        }
+
+        const mesesCumpridos = mesesTotais - mesesRestantes;
+
+        $('#totalMesesContrato').text(mesesTotais);
+        $('#mesesRestantes').text(mesesRestantes);
+        $('#mesesCumpridos').text(mesesCumpridos);
+        $('#valorMulta').text(multa.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }));
+        $('#resultado').show();
+    }
+
+    function limparCampos() {
+        $('#formMulta')[0].reset();
+        $('#resultado').hide();
+        $('#totalMesesContrato').text('');
+        $('#mesesRestantes').text('');
+        $('#mesesCumpridos').text('');
+        $('#valorMulta').text('');
+    }
+</script>
+
+</body>
+</html>
